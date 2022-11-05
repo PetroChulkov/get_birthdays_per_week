@@ -1,49 +1,73 @@
 import datetime
-
-def get_birthdays_per_week(users):
-    days = {
-        'Monday': '',
-        'Tuesday': '',
-        'Wednesday': '',
-        'Thursday': '',
-        'Friday': '',
-    }
-    res = {}
-    today = datetime.datetime.now()
-    one_week_forward = today + datetime.timedelta(days=7)
-    user = {'Andrii': datetime.datetime(year=2022, month=11, day=8)}
-    ts_today = today.timestamp()
-    ts_week_forward = one_week_forward.timestamp()
-    for user in users:
-        for k, v in user.items():
-            if ts_today <= v.timestamp() and v.timestamp() <= ts_week_forward:
-                if v.weekday() == 0:
-                    days['Monday'] = k + ',' + ' '
-                elif v.weekday() == 1:
-                    days['Tuesday'] += k + ',' + ' '
-                elif v.weekday() == 2:
-                    days['Wednesday'] = k + ',' + ' '
-                elif v.weekday() == 3:
-                    days['Thursday'] = k + ',' + ' '
-                elif v.weekday() == 4:
-                    days['Friday'] = k + ',' + ' '
-                else:
-                    days['Monday'] = k + ',' + ' '
-    for key in days:
-        if len(days[key]) >= 1:
-            res[key] = days[key][:-2]
-    for key, value in res.items():
-        print(key + " : " + value)
-
-
-
-
-
 users = [
-    {'Ivan': datetime.datetime(year=2022, month=10, day=12)},
+    {'name': 'Ivan', 'birthday': datetime.datetime(year=1992, month=2, day=29)},
 
-    {'Andrii': datetime.datetime(year=2022, month=11, day=8)},
+    {'name': 'Andrii', 'birthday': datetime.datetime(year=1986, month=11, day=8)},
 
-    {'Ivan': datetime.datetime(year=2022, month=11, day=10)},
+    {'name': 'Semen', 'birthday': datetime.datetime(year=1989, month=11, day=10)},
+
+    {'name': 'Serhii', 'birthday': datetime.datetime(year=1954, month=11, day=11)},
+
+    {'name': 'Dmytro', 'birthday': datetime.datetime(year=1934, month=11, day=14)},
+
+    {'name': 'Oleksii', 'birthday': datetime.datetime(year=1954, month=11, day=6)},
+
+    {'name': 'Inna', 'birthday': datetime.datetime(year=1954, month=11, day=8)}
 ]
+
+def convert_to_current_year(users): #фунція видає день народження працівника в цьому році та корегує її на випадок ДН, яке припадає на 29 лютого, у випадку, якщо цей рік не є високосним.
+    for user in users:
+        date = user['birthday']
+        day = date.day
+        month = date.month
+        try:
+            birthdate_this_year = datetime.datetime(year=2022, month=month, day=day)
+            update_pair = {'birthday': birthdate_this_year}
+            user.update(update_pair)
+        except ValueError:
+            month = 3
+            day = 1
+            birthdate_this_year = datetime.datetime(year=2022, month=month, day=day)
+            update_pair = {'birthday': birthdate_this_year}
+            user.update(update_pair)
+    return users
+
+
+def define_range(current_date): #фунція не включає в діапазон зайві вихідні дні наступного тижня, якщо програма запущена у вихідний день поточного
+    if current_date.weekday() == 5:
+        range = datetime.timedelta(days=6)
+    elif current_date.weekday() == 5:
+        range = datetime.timedelta(days=5)
+    else:
+        range = datetime.timedelta(days=7)
+    return range
+
+
+def get_birthdays_per_week(users): #фінальна функція
+
+    days = {
+        'Monday': [],
+        'Tuesday': [],
+        'Wednesday': [],
+        'Thursday': [],
+        'Friday': [],
+    }
+
+    birthdays = convert_to_current_year(users)
+    current_date = datetime.datetime.now()
+    range = define_range(current_date)
+    last_day_in_range = current_date + range
+
+    for user in birthdays:
+        birthday = user['birthday']
+        if current_date < birthday <= last_day_in_range:
+            weekday = birthday.strftime('%A')
+            if weekday in ['Saturday', 'Sunday']:
+                weekday = 'Monday'
+            days.get(weekday).append(user.get('name'))
+
+    for k, v in days.items():
+        print(f"{k}: {', '.join(v)}")
+
+
 get_birthdays_per_week(users)
