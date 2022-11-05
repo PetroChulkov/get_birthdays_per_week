@@ -40,10 +40,10 @@ def get_birthdays_per_week(users):
 
 
 users = [
-    {'Ivan': datetime(year=2022, month=10, day=12)},
+    {'Ivan': datetime.datetime(year=2022, month=10, day=12)},
 
-    {'Andrii': datetime(year=2022, month=11, day=8)},
+    {'Andrii': datetime.datetime(year=2022, month=11, day=8)},
 
-    {'Ivan': datetime(year=2022, month=11, day=10)},
+    {'Ivan': datetime.datetime(year=2022, month=11, day=10)},
 ]
 get_birthdays_per_week(users)
