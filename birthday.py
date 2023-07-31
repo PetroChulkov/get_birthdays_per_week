@@ -1,4 +1,8 @@
 import datetime
+
+year_now = datetime.date.today()
+current_year = year_now.year
+
 users = [
     {'name': 'Ivan', 'birthday': datetime.datetime(year=1992, month=2, day=29)},
 
@@ -21,13 +25,13 @@ def convert_to_current_year(users): #фунція видає день народ
         day = date.day
         month = date.month
         try:
-            birthdate_this_year = datetime.datetime(year=2022, month=month, day=day)
+            birthdate_this_year = datetime.datetime(year=current_year, month=month, day=day)
             update_pair = {'birthday': birthdate_this_year}
             user.update(update_pair)
         except ValueError:
             month = 3
             day = 1
-            birthdate_this_year = datetime.datetime(year=2022, month=month, day=day)
+            birthdate_this_year = datetime.datetime(year=current_year, month=month, day=day)
             update_pair = {'birthday': birthdate_this_year}
             user.update(update_pair)
     return users
